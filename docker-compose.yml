@@ -2,11 +2,15 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    image: mysql:5.7  # MySQLのバージョンはプロジェクトの要件に応じて調整してください。
     volumes:
-      - ./tmp/db:/var/lib/postgresql/data
+      - ./tmp/db:/var/lib/mysql  # MySQLのデータ保存先
     environment:
-      POSTGRES_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password  # rootユーザーのパスワード
+      MYSQL_DATABASE: myapp_development  # 作成するデータベース名
+      MYSQL_USER: user  # データベースユーザー名
+      MYSQL_PASSWORD: password  # データベースユーザーのパスワード
+    command: --default-authentication-plugin=mysql_native_password  # 新しいバージョンのMySQLで必要な場合があります
   web:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3010 -b '0.0.0.0'"
